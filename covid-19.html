@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>DATA COVID 19 INDONESIA</h1>
+  <ul id="target-list"></ul>
+  <table>
+    <thead>
+      <tr>
+        <th>Provinsi</th>
+        <th>Positif</th>
+        <th>Sembuh</th>
+        <th>Meninggal</th>
+      </tr>
+    </thead>
+    <tbody id="target-table-body"></tbody>
+  </table>
+  <script>
+    fetch('https://indonesia-covid-19.mathdro.id/api/provinsi')
+    .then(res => {
+      return res.json()
+    })
+    .then(data => {
+    let positif = 0,
+    sembuh = 0,
+    meninggal= 0
+    for (let index = 0; index < data.data.length; index++) {
+      const resultCase = data.data[index];
+      if(resultCase.kasusPosi && resultCase.kasusSemb && resultCase.kasusMeni) {
+        positif += resultCase.kasusPosi
+        sembuh += resultCase.kasusSemb
+        meninggal += resultCase.kasusMeni
+      }
+    }
+    document.getElementById('target-list').innerHTML = `
+    <li>Positif : <a>${positif}</a></li> 
+    <li>Sembuh : <a>${sembuh}</a></li>
+    <li>Meninggal : <a>${meninggal}</a></li>`
+
+    data.data.forEach((resultCase, i) => {
+      document.getElementById('target-table-body').innerHTML += `
+        <tr>
+          <td>${resultCase.provinsi}</td>  
+          <td>${resultCase.kasusPosi}</td> 
+          <td>${resultCase.kasusSemb}</td>  
+          <td>${resultCase.kasusMeni}</td>  
+        </tr>
+      `
+    })
+    })
+  </script>
+</body>
+</html>
